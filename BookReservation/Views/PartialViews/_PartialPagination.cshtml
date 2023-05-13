@@ -1,0 +1,34 @@
+﻿@model PaginationModel
+
+<nav>
+    <ul class="pagination justify-content-center">
+        @if (Model.PageNumber > 1)
+        {
+            <li class="page-item">
+                <a class="page-link"
+               href="@($"{Model.Link}/{Model.PageNumber - 1}")">
+                    Previous
+                </a>
+            </li>
+        }
+        @for (int i = Math.Max(1, Model.PageNumber - 3); i <= Math.Min(Model.PageNumber + 3, Model.PageCount); ++i)
+        {
+            if (Model.PageNumber == i)
+            {
+                <li class="page-item active" aria-current="page"><a class="page-link" href="#" disabled>@i</a></li>
+                continue;
+            }
+            <li class="page-item">
+                <a class="page-link"
+               href="@($"{Model.Link}/{i}")">@i</a>
+            </li>
+        }
+        @if (Model.PageNumber < Model.PageCount)
+        {
+            <li class="page-item">
+                <a class="page-link"
+               href="@($"{Model.Link}/{Model.PageNumber + 1}")">Next</a>
+            </li>
+        }
+    </ul>
+</nav>

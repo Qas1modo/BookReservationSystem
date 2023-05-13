@@ -1,0 +1,184 @@
+﻿@model BookDetailIndexModel
+
+
+<div class="card-body">
+    <h4 class="card-title">
+        @Model.BookInfo.Name
+    </h4>
+
+    <h5 class="card-subtitle mb-2 text-muted">
+        @Model.BookInfo.Author
+    </h5>
+
+    <h5 class="card-subtitle mb-2 text-muted">
+        @Model.BookInfo.Genre
+    </h5>
+    <span class="card-text text-start font-monospace" style="font-size: 1.3rem">
+        @(Math.Round(Model.BookInfo.Price, 2))/day [@Model.BookInfo.Stock]
+    </span>
+    <hr />
+    <p class="card-text row m-1 text-left" style="overflow-wrap: anywhere">
+        @Model.BookInfo.Description
+    </p>
+    <hr />
+    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#myModal">
+        Add to cart
+    </button>
+    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#myModal1">
+        Add review
+    </button>
+    <a href="@Url.ActionLink("AddToWishlist", "BookDetail", new { bookId = Model.BookInfo.Id, page = Model.Page })" class="btn btn-primary">Add to wishlist</a>
+ 
+</div>
+@Html.ValidationSummary(false, "", new { @class = "text-danger" })
+<!-- The Modal -->
+<div class="modal" id="myModal" tabindex="-1" role="dialog">
+    <div class="modal-dialog">
+        <div class="modal-content">
+
+            <!-- Modal Header -->
+            <div class="modal-header">
+                <h4 class="modal-title">For how many days would you like to reserve this book?</h4>
+            </div>
+
+            <!-- Modal body -->
+            <form method="post">
+                <div class="modal-body">
+                    <label for="points">Days (between 1 and 365):</label>
+                    <input type="number" id="days" name="days" min="1" max="365" required>
+                </div>
+
+                <!-- Modal footer -->
+                <div class="modal-footer">
+                    <button type="submit" formaction="@Url.Action("AddToCart", "BookDetail", new { bookId = Model.BookInfo.Id, page = Model.Page})" class="btn btn-primary mb-2">Submit</button>
+                    <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Close</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+
+
+<h4 class="p-3 card-title">Book reviews</h4>
+@if (Model.Reviews.Count() != 0)
+{
+    foreach (var review in Model.Reviews)
+    {
+        <div class="card my-2 p-1" style="width: 100%;">
+            <div class="card-body">
+                <div class="card-title row justify-content-between">
+                    <span class="col col-sm-9 m-0 text-left" style="font-size: 1.2rem">
+                        @review.User
+                    </span>
+                    <span class="col col-sm-3 m-0 text-end font-monospace" style="font-size: 1.2rem">
+                        Score: @review.Score
+                    </span>
+                </div>
+                <div class="card-text row justify-content-between">
+                    @if (review.Description == null)
+                    {
+                        <p class="col col-sm-9 m-0 text-left text-muted">No description</p>  
+                    }
+                    else 
+                    { 
+                        <p class="col col-sm-9 m-0 text-left">@review.Description</p> 
+                    }
+                    <span class="col col-sm-3 m-0 text-end">
+                        Added at: @review.AddedAt
+                    </span>
+                </div>
+                @if (review.UserId == Model.UserId || this.User.IsInRole("Admin"))
+            {
+                    <a class="btn btn-danger mt-3"
+                    href="@($"/book/DeleteReview/{Model.BookInfo.Id}/{review.Id}/{Model.Page}")">Delete</a>
+                }
+            </div>  
+        </div>
+    }
+}
+else if (Model.Page > 1) {
+    <p class="p-3">There are no reviews on this page!</p>
+}
+else
+{
+    <p class="p-3">This product does not have any reviews. Be first to review this product!</p>
+}
+
+@await Html.PartialAsync("/Views/PartialViews/_PartialPagination.cshtml",
+new PaginationModel { PageCount = Model.PageCount,
+PageNumber = Model.Page,
+Link = $"/book/{Model.BookInfo.Id}" })
+
+<!-- The Modal1 -->
+<div class="modal" id="myModal1" tabindex="-1" role="dialog">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+
+            <!-- Modal Header -->
+            <div class="modal-header">
+                <h4 class="modal-title">Add your review</h4>
+            </div>
+
+            <form method="post">
+                <!-- Modal body -->
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label>Score: </label>
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input" type="radio" name="inlineRadioOptions" id="inlineRadio1" value="1" required>
+                            <label class="form-check-label" for="inlineRadio1">1</label>
+                        </div>
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input" type="radio" name="inlineRadioOptions" id="inlineRadio2" value="2" required>
+                            <label class="form-check-label" for="inlineRadio2">2</label>
+                        </div>
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input" type="radio" name="inlineRadioOptions" id="inlineRadio3" value="3" required>
+                            <label class="form-check-label" for="inlineRadio3">3</label>
+                        </div>
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input" type="radio" name="inlineRadioOptions" id="inlineRadio4" value="4" required>
+                            <label class="form-check-label" for="inlineRadio4">4</label>
+                        </div>
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input" type="radio" name="inlineRadioOptions" id="inlineRadio5" value="5" required>
+                            <label class="form-check-label" for="inlineRadio5">5</label>
+                        </div>
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input" type="radio" name="inlineRadioOptions" id="inlineRadio6" value="6" required>
+                            <label class="form-check-label" for="inlineRadio6">6</label>
+                        </div>
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input" type="radio" name="inlineRadioOptions" id="inlineRadio7" value="7" required>
+                            <label class="form-check-label" for="inlineRadio7">7</label>
+                        </div>
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input" type="radio" name="inlineRadioOptions" id="inlineRadio8" value="8" required>
+                            <label class="form-check-label" for="inlineRadio8">8</label>
+                        </div>
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input" type="radio" name="inlineRadioOptions" id="inlineRadio9" value="9" required>
+                            <label class="form-check-label" for="inlineRadio9">9</label>
+                        </div>
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input" type="radio" name="inlineRadioOptions" id="inlineRadio10" value="10" required>
+                            <label class="form-check-label" for="inlineRadio10">10</label>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="exampleFormControlTextarea1">Down below you can write your book review</label>
+                        <textarea class="form-control" name="description" id="exampleFormControlTextarea1" rows="3"></textarea>
+                    </div>
+                </div>
+
+                <!-- Modal footer -->
+                <div class="modal-footer">
+                    <button type="submit" formaction="@Url.Action("AddReview", "BookDetail", new { bookId = Model.BookInfo.Id, page = Model.Page})" class="btn btn-primary mb-2">Submit</button>
+                    <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Close</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

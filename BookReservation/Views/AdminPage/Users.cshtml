@@ -1,0 +1,69 @@
+﻿@using DAL.Enums
+@model AdminPageUsersModel
+
+<h1>Users</h1>
+
+<hr/>
+@if (Model.Users == null || Model.Users.Count() == 0)
+{
+	<h4>No users</h4>
+}
+else
+{
+	foreach (var user in Model.Users)
+	{
+		<div class="row">
+			<a class="col col-sm-6" href="/User/@(user.Id)/changeinfo">
+				<div class="fw-bold">@user.Name</div>
+				@user.Email
+			</a>
+			@if (user.Id != Model.SignedUser)
+			{
+				<div class="col col-sm-4">
+					<form class="row" method="post" action="/AdminPage/ChangeGroup">
+						<select class="col col-md-6 m-2" id="newgroup" name="newgroup">
+							@if (user.Group == Group.Admin)
+							{
+								<option selected value="Admin">Admin</option>
+							}
+							else
+							{
+								<option value="Admin">Admin</option>
+							}
+							@if (user.Group == Group.Employee)
+							{
+								<option selected value="Employee">Employee</option>
+							}
+							else
+							{
+								<option value="Employee">Employee</option>
+							}
+							@if (user.Group == Group.User)
+							{
+								<option selected value="User">User</option>
+							}
+							else
+							{
+								<option value="User">User</option>
+							}
+						</select>
+						<input type="hidden" name="userId" value="@(user.Id)" />
+						<button type="submit" class="btn col col-md-4 m-2 bg-success">Change</button>
+					</form>
+				</div>
+				<div class="col col-sm-2">
+					<a href="@Url.ActionLink("DeleteUser", "AdminPage", new { userId = user.Id })"
+						class="btn m-2 bg-danger">
+						Delete
+					</a>
+				</div>
+			}
+		</div>
+		<hr />
+	}
+}
+
+@await Html.PartialAsync("/Views/PartialViews/_PartialPagination.cshtml",
+new PaginationModel { PageCount = Model.Total,
+    PageNumber = Model.Page,
+    Link = "/adminpage/Users"})

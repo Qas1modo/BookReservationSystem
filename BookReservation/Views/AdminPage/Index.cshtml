@@ -1,0 +1,36 @@
+﻿<h1>Admin page</h1>
+@Html.ValidationSummary(false, "", new { @class = "text-danger" })
+<hr />
+<div class="card w-50 m-3">
+    <div class="card-body">
+        <h5 class="card-title">Users</h5>
+        <p class="card-text">Delete, edit user info</p>
+        <a class="btn btn-primary" asp-controller="AdminPage" asp-action="Users">Manage users</a>
+    </div>
+</div>
+
+<div class="card w-50 m-3">
+    <div class="card-body">
+        <h5 class="card-title">Books</h5>
+        <p class="card-text">Add or change book properties</p>
+        <a class="btn btn-primary" asp-controller="AdminPage" asp-action="Books">Edit books</a>
+        <a class="btn btn-primary" asp-controller="AdminPage" asp-action="AddBook">Create a new book</a>
+        <a class="btn btn-primary" asp-controller="AdminPage" asp-action="DeleteData">Delete author or genre</a>
+    </div>
+</div>
+
+<div class="card w-50 m-3">
+    <div class="card-body">
+        <h5 class="card-title">Expire old reservations</h5>
+        <p class="card-text">Expire reservation older than 7 days (should be run automaticily by midnight)</p>
+        <a class="btn btn-primary" asp-controller="AdminPage" asp-action="ExpireOldReservations">Expire reservations</a>
+    </div>
+</div>
+
+<div class="card w-50 m-3">
+    <div class="card-body">
+        <h5 class="card-title">Manually resync NoSQL database (takes long)</h5>
+        <p class="card-text">Resync NoSQL database with Relational database.</p>
+        <a class="btn btn-primary" asp-controller="AdminPage" asp-action="Resync">Resync</a>
+    </div>
+</div>

@@ -1,0 +1,56 @@
+﻿@model CartIndexModel
+
+<h3 class="display-5 text-center">Your cart</h3>
+@Html.ValidationSummary(false, "", new { @class = "text-danger" })
+@{
+    decimal totalPrice = 0;
+    foreach (var item in Model.CartItems)
+    {
+        <hr />
+        <div class="row m-1">
+            <div class="col-sm">
+                <div class="row">
+                    <a class="text-decoration-none" href="/book/@item.BookId" style="font-size: 1.5rem">@item.Name</a>
+                </div>
+                <div class="row">
+                     <h6 class="text-muted m-0">@item.AuthorName</h6>
+                </div>
+                <div class="row font-monospace">
+                    <span>@(item.GenreName)</span>
+                </div>
+            </div>
+            <div class="col-sm">
+                <div class="row text-end">
+                    @{
+                        decimal price = item.Price * item.LoanPeriod;
+                        totalPrice += price;
+                    }
+                    <span class="m-0" style="font-size: 1.5rem">@Math.Round(price, 2)</span>
+                </div>
+                <div class="row text-end">
+                    <span class="text-muted">@(Math.Round(item.Price, 2))/day</span>
+                </div>
+                <div class="row text-end">
+                    <span>Rent for @(item.LoanPeriod) day(s)</span>
+                </div>
+            </div>
+            <div class="row justify-content-end">
+                <a href="@Url.Action("DeleteItem", "Cart", new { itemId = item.Id })" class="btn col col-sm-2 btn-danger m-2">Delete</a>
+            </div>
+        </div>
+    }
+    <hr />
+    if (Model.CartItems.Count() == 0)
+    {
+    <h5 class="display-6">Your cart is empty!</h5>
+    }
+    else
+    {
+    <h5 class="display-6 text-end">Total price: @Math.Round(totalPrice, 2)</h5>
+    <hr />
+    <div class="row justify-content-end">
+        <a href="@Url.Action("MakeOrder", "Cart")" class="btn col col-sm-3 btn-primary m-2">Make Reservation</a>
+        <a href="@Url.Action("EmptyCart", "Cart")" class="btn col col-sm-3 btn-danger m-2">Empty cart</a>
+    </div>
+    }
+}

@@ -1,0 +1,186 @@
+﻿@model ReservationModel<BL.DTOs.ReservationDetailDto>
+@{
+    ViewData["Title"] = "User page";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="row">
+    <div class="col s12">
+        <div class="row valign-wrapper my-4">
+            <span class="text-xxl-center display-6">Reservation history</span>
+        </div>
+        @Html.ValidationSummary(false, "", new { @class = "text-danger" })
+        <div class="row justify-content-around">
+            <a class="btn col col-sm-3 text-decoration-none m-1
+                @(ViewData.Model.CurrentState == DAL.Enums.RentState.Awaiting ? "disabled bg-secondary" : "bg-primary")"
+               href="/reservations/@(Model.UserId)/awaiting/">
+                Awaiting
+            </a>
+            <a class="btn col col-sm-3 text-decoration-none m-1
+                @(ViewData.Model.CurrentState == DAL.Enums.RentState.Reserved ? "disabled bg-secondary" : "bg-primary")"
+               href="/reservations/@(Model.UserId)/reserved/">
+                Ready
+            </a>
+            <a class="btn col col-sm-3 text-decoration-none m-1
+                @(ViewData.Model.CurrentState == DAL.Enums.RentState.Canceled ? "disabled bg-secondary" : "bg-primary")"
+               href="/reservations/@(Model.UserId)/canceled/">
+                Canceled
+            </a>
+            </div>
+            <div class="row justify-content-around">
+            <a class="btn col col-sm-3 text-decoration-none m-1
+                @(ViewData.Model.CurrentState == DAL.Enums.RentState.Expired ? "disabled bg-secondary" : "bg-primary")"
+               href="/reservations/@(Model.UserId)/expired/">
+                Expired
+            </a>
+            <a class="btn col col-sm-3 text-decoration-none m-1
+                @(ViewData.Model.CurrentState == DAL.Enums.RentState.Active ? "disabled bg-secondary" : "bg-primary")"
+               href="/reservations/@(Model.UserId)/active/">
+                Active
+            </a>
+            <a class="btn col col-sm-3 text-decoration-none m-1
+                @(ViewData.Model.CurrentState == DAL.Enums.RentState.Returned ? "disabled bg-secondary" : "bg-primary")"
+               href="/reservations/@(Model.UserId)/returned/">
+                Returned
+            </a>
+        </div>
+        <hr />
+        @foreach (BL.DTOs.ReservationDetailDto detail in Model.Items)
+        {
+            int lateBy = 0;
+            decimal fine = 0;
+            if (detail.RentedAt != null)
+            {
+                if (detail.ReturnedAt != null)
+                {
+                    lateBy = detail.ReturnedAt.Value.Subtract(detail.RentedAt.Value.AddDays(detail.LoanPeriod)).Days;
+                }
+                else
+                {
+                    lateBy = DateTime.Now.Subtract(detail.RentedAt.Value.AddDays(detail.LoanPeriod)).Days;
+                }
+                if (lateBy < 1)
+                {
+                    lateBy = 0;
+                }
+                else
+                {
+                    fine = lateBy * detail.Price;
+                }
+            }
+            <div class="row m-3">
+                <div class="col-sm">
+                    <div class="row">
+                        <a href="/book/@(detail.BookId)" style="font-size: 1.2rem">@(detail.Name)</a>
+                    </div>
+                    <div class="row">
+                        <span class="h6 m-0">@(detail.Author)</span>
+                    </div>
+                    <div class="row font-monospace">
+                        <span>@(detail.Genre)</span>
+                    </div>
+                </div>
+                <div class="col-sm">
+                    <div class="row text-end">
+                        <span class="h5 m-0">
+                            @(Math.Round(detail.Price * detail.LoanPeriod, 2))
+                            @if (fine > 0)
+                            {
+                                <span class="text-danger">+@(fine)</span>
+                            }
+                            <span style="font-size: 1rem" class="p-1">
+                                [@(Math.Round(detail.Price, 2))/day]
+                            </span>
+                        </span>
+                    </div>
+                    <div class="row text-end">
+                        @if (detail.State == DAL.Enums.RentState.Awaiting)
+                        {
+                            <span class="text-error">Reservation is not on stock!</span>
+                        }
+                        @if (detail.State == DAL.Enums.RentState.Reserved)
+                        {
+                            <span class="text-success">Reservation ready until @(detail.ReservedAt.AddDays(7).ToShortDateString())</span>
+                        }
+                        @if (detail.State == DAL.Enums.RentState.Expired && detail.CanceledAt != null)
+                        {
+                            <span class="text-warning">Reservation expired at @(detail.CanceledAt.Value.ToShortDateString())</span>
+                        }
+                        @if (detail.State == DAL.Enums.RentState.Canceled && detail.CanceledAt != null)
+                        {
+                            <span class="text-danger">Reservation canceled at @(detail.CanceledAt.Value.ToShortDateString())</span>
+                        }
+                        @if (detail.State == DAL.Enums.RentState.Active && detail.RentedAt != null)
+                        {
+                            if (lateBy > 0)
+                            {
+                                <span class="text-danger">Late by @(lateBy) day(s)</span>
+                            }
+                            else
+                            {
+                                <span class="text-info">Return before @(detail.RentedAt.Value.AddDays(detail.LoanPeriod).ToShortDateString())</span>
+                            }
+                        }
+                        @if (detail.State == DAL.Enums.RentState.Returned && detail.ReturnedAt != null && detail.RentedAt != null)
+                        {
+                            if (lateBy > 0)
+                            {
+                                <span class="text-danger">Returned late by @(lateBy) day(s) at @(detail.ReturnedAt.Value.ToShortDateString())</span>
+                            }
+                            else
+                            {
+                                <span class="text-info">Returned after @(detail.ReturnedAt.Value.Subtract(detail.RentedAt.Value).Days) day(s) at @(detail.ReturnedAt.Value.ToShortDateString())</span>
+                            }
+                        }
+                    </div>
+                    <div class="row text-end">
+                        <span class="text-muted">Rent for @(detail.LoanPeriod) day(s)</span>
+                    </div>
+                </div>
+                <div class="row justify-content-end">
+                    @if (Model.CurrentState == DAL.Enums.RentState.Reserved ||
+                   Model.CurrentState == DAL.Enums.RentState.Awaiting)
+                    {
+                            <a href="@Url.Action("Cancel",new { id = detail.Id, userId = Model.UserId, page = Model.PageNumber})"
+                            class="btn col col-sm-2 text-decoration-none m-2 text-black bg-danger">
+                                Cancel
+                            </a>
+                            @if (Model.CurrentState == DAL.Enums.RentState.Reserved) {
+                            <a class="btn col col-sm-2 text-decoration-none m-2 bg-success
+                            @(Model.Group != "User" ? "" : "d-none")"
+                            href="@Url.Action("Picked",new { id = detail.Id, userId = Model.UserId, page = Model.PageNumber})">
+                                Picked
+                            </a>
+                            }
+                    }
+                    @if (Model.CurrentState == DAL.Enums.RentState.Expired)
+                    {
+                        <a href="@Url.Action("Renew",new { id = detail.Id, userId = Model.UserId, page = Model.PageNumber})"
+                        class="btn col col-sm-2 text-decoration-none m-2 text-black bg-success">
+                            Renew
+                        </a>
+                    }
+                    @if ((Model.CurrentState == DAL.Enums.RentState.Active) && Model.Group != "User")
+                    {
+                        <a class="btn col col-sm-2 text-decoration-none m-2 bg-success"
+                   href="@Url.Action("Returned",new { id = detail.Id, userId = Model.UserId, page = Model.PageNumber})">
+                            Returned
+                        </a>
+                    }
+                </div>
+            </div>
+            <hr />
+        }
+        @if (Model.Items.Count() < 1)
+        {
+            <div class="justify-content-center align-items-center">
+                <span class="display-6">There are no reservations on this page</span>
+            </div>
+            <hr />
+        }
+        @await Html.PartialAsync("/Views/PartialViews/_PartialPagination.cshtml",
+        new PaginationModel { PageCount = Model.PageCount,
+            PageNumber = Model.PageNumber,
+            Link = $"/reservations/{Model.UserId}/{Model.CurrentState.ToString()}"})
+    </div>
+</div>

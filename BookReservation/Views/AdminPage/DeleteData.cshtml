@@ -1,0 +1,45 @@
+﻿@model DeleteDataModel
+<div class="row valign-wrapper my-4 display-6">
+    <span class="text-xxl-center">Delete genre or author</span>
+</div>
+@Html.ValidationSummary(false, "", new { @class = "text-danger" })
+<div class="card w-50 m-3">
+    <div class="card-body">
+        <h5 class="card-title">Delete genre</h5>
+          @using (Html.BeginForm())
+        {
+            <div class="row valign-wrapper m-2 text-xxl-center">
+                <div class="col s12 l4">Select from existing genres:</div>
+                <select asp-for="GenreName" class="form-control" asp-items="@ViewBag.genres"></select>
+            </div>
+            <div class="row justify-content-around">
+
+                <input type="submit" value="Confirm change" class="btn col col-md-3 m-2 bg-success" />
+            </div>
+        }
+    </div>
+</div>
+
+<div class="card w-50 m-3">
+    <div class="card-body">
+        <h5 class="card-title">Delete author (Deletes all connected books!)</h5>
+        @using (Html.BeginForm())
+        {
+            <div class="row valign-wrapper m-2 text-xxl-center">
+                <div class="col s12 l4">Author:</div>
+                <div class="input-field col s12 l8">
+                    @Html.TextBoxFor(model => model.AuthorName, new { required = true })
+                </div>
+            </div>
+            <div class="row justify-content-around">
+                <input type="submit" value="Confirm change" class="btn col col-md-3 m-2 bg-success" />
+            </div>
+        }
+    </div>
+</div>
+
+<div class="row justify-content-around">
+    <a class="btn col col-md-3 text-decoration-none m-2 bg-danger" href="/AdminPage/">
+        Cancel change
+    </a>
+</div>

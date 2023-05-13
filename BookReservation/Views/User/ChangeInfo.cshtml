@@ -1,0 +1,87 @@
+﻿@model BL.DTOs.PersonalInfoDto
+@{
+    ViewData["Title"] = "Register";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="row">
+    <div class="col s12">
+        @using (Html.BeginForm())
+        {
+            <div class="row valign-wrapper my-4 display-6">
+                <span class="text-center">Change personal data</span>
+            </div>
+            @Html.ValidationSummary(false, "", new { @class = "text-danger" })
+            <div class="row valign-wrapper my-4 h4">
+                <span class="text-left">Personal information:</span>
+            </div>
+            <hr />
+            <div class="row valign-wrapper m-2 text-center">
+                <div class="col s12 l4">Username:</div>
+                <div class="input-field col s12 l8">
+                    @Html.TextBoxFor(model => model.Name, new { placeholder = "Username", required = true })
+                </div>
+            </div>
+            <hr />
+            <div class="row valign-wrapper m-2 text-center">
+                <div class="col s12 l4">Email:</div>
+                <div class="input-field col s12 l8">
+                    @Html.TextBoxFor(model => model.Email, new { placeholder = "Email" ,required = true })
+                </div>
+            </div>
+            <hr />
+            <div class="row valign-wrapper m-2 text-center">
+                <div class="col s12 l4">Phone:</div>
+                <div class="input-field col s12 l8">
+                    @Html.TextBoxFor(model => model.Phone, new { placeholder = "Phone", required = true })
+                </div>
+            </div>
+            <hr />
+            <div class="row valign-wrapper m-2 text-center">
+                <div class="col s12 l4">BirthDate:</div>
+                <div class="input-field col s12 l8">
+                    @Html.TextBoxFor(model => model.BirthDate, new { required = true, type = "date" })
+                </div>
+            </div>
+            <hr />
+            <div class="row valign-wrapper my-4 h4">
+                <span class="text-xxl-left">Your address:</span>
+            </div>
+            <hr />
+            <div class="row valign-wrapper m-2 text-center">
+                <div class="col s12 l4">Street:</div>
+                <div class="input-field col s12 l8">
+                    @Html.TextBoxFor(model => model.Street, new { placeholder = "Street", required = true })
+                </div>
+            </div>
+            <hr />
+            <div class="row valign-wrapper m-2 text-center">
+                <div class="col s12 l4">Street number:</div>
+                <div class="input-field col s12 l8">
+                    @Html.TextBoxFor(model => model.StNumber, new { placeholder = "Street number", type = "number", required = true })
+                </div>
+            </div>
+            <hr />
+            <div class="row valign-wrapper m-2 text-center">
+                <div class="col s12 l4">City:</div>
+                <div class="input-field col s12 l8">
+                    @Html.TextBoxFor(model => model.City, new { placeholder = "City", required = true })
+                </div>
+            </div>
+            <hr />
+            <div class="row valign-wrapper m-2 text-center">
+                <div class="col s12 l4">Zip code:</div>
+                <div class="input-field col s12 l8">
+                    @Html.TextBoxFor(model => model.ZipCode, new { placeholder = "Zip code", type = "number", required = true })
+                </div>
+            </div>
+            <hr />
+            <div class="row justify-content-around">
+                <a class="btn col col-md-3 text-decoration-none m-2 bg-danger" href="/User/@ViewBag.userId">
+                    Cancel change
+                </a>
+                <input type="submit" value="Confirm change" class="btn col col-md-3 m-2 bg-success" />
+            </div>
+        }
+    </div>
+</div>

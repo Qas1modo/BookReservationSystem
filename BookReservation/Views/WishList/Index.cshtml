@@ -1,0 +1,54 @@
+﻿@model WishListModel
+
+<h3 class="display-5 text-center">Your wishlist</h3>
+@Html.ValidationSummary(false, "", new { @class = "text-danger" })
+
+<hr />
+@if (Model.Items.Count() == 0)
+{
+    if (Model.PageNumber > 1) 
+    {
+        <div class="row">
+            <span class="display-6">No books in wish list on this page.</span>
+        </div>
+    }
+    else 
+    {
+        <div class="row">
+            <span class="display-6">No books in wish list.</span>
+        </div>
+    }
+}
+@foreach (var item in Model.Items)
+{
+    <hr />
+    <div class="row m-1">
+        <div class="col-sm">
+            <div class="row">
+                <a class="text-decoration-none" href="/book/@item.BookId" style="font-size: 1.5rem">@item.Name</a>
+            </div>
+            <div class="row">
+                <h6 class="text-muted m-0">@item.AuthorName</h6>
+            </div>
+            <div class="row font-monospace">
+                <span>@item.GenreName</span>
+            </div>
+        </div>
+        <div class="col-sm">
+            <div class="row text-end">
+                <span class="m-0 font-monospace" style="font-size: 1.5rem">@(Math.Round(item.Price, 2))/day</span>
+            </div>
+            <div class="row text-end">
+                <span class="m-0" style="font-size: 1.2rem">Added at @item.AddedAt.ToShortDateString()</span>
+            </div>
+        </div>
+        <div class="row justify-content-end">
+            <a href="@Url.Action("DeleteItem", "WishList", new { itemId = item.Id })" class="btn col col-sm-2 btn-danger m-2">Delete</a>
+        </div>
+    </div>
+    <hr />
+}
+@await Html.PartialAsync("/Views/PartialViews/_PartialPagination.cshtml",
+    new PaginationModel { PageCount = Model.PageCount,
+        PageNumber = Model.PageNumber,
+        Link = $"/wishlist"})

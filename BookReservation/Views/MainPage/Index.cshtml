@@ -1,0 +1,189 @@
+﻿@model MainPageIndexModel
+
+<style>
+
+.card:hover{
+    transform: scale(1.05);
+	box-shadow: 0 10px 20px rgba(0,0,0,.12), 0 4px 8px rgba(0,0,0,.06);
+	cursor: pointer;
+}
+
+</style>
+
+<h1 class="display-4 text-center">Book Reservation System</h1>
+<!-- The Modal -->
+<div class="modal" id="myModal" tabindex="-1" role="dialog">
+	<div class="modal-dialog">
+		<div class="modal-content">
+
+			<!-- Modal Header -->
+			<div class="modal-header">
+				<h4 class="modal-title">Filter book results</h4>
+			</div>
+
+			 <!-- Modal body -->
+			<form method="post">
+				<div class="modal-body">
+										
+					<!--GENRE FILTER-->
+					<label  class="control-label">Select Genre</label>
+					<select name="Genre" value="@(Model.GenreFilter ?? "All")" class="form-control" asp-items="@ViewBag.genres"></select>
+					
+					<!--AUTHOR FILTER-->
+					<label  class="control-label">Filter with author name</label>
+					<input type="text" name="Author" value="@Model.AuthorFilter" class="form-control" />
+
+					<label  class="control-label">Filter with book name</label>
+					<input type="text" name="BookName" value="@Model.NameFilter" class="form-control" />
+
+					<!--ON STOCK OPTION FILTER-->
+					<input data-val="true"
+						checked="@(!Model.OnStock)"
+						id="filterCheckbox" 
+						name="Stock" 
+						type="checkbox" 
+						value="true" />
+					<label class="form-check-label" for="filterCheckbox">
+						Include books that are currently not in stock
+					</label>
+
+
+					<label class="row my-1 mx-0 control-label">Order By column</label>
+					<select name="OrderColumn" class="form-control" asp-items="@ViewBag.orderBy"></select>
+
+					<input data-val="true"
+						checked="@(Model.Descending)"
+						id="filterDescending" 
+						name="SortDescending" 
+						type="checkbox" 
+						value="true" />
+					<label class="form-check-label" for="filterDescending">
+						Sort Descending
+					</label>
+				</div>
+				<!-- Modal footer -->
+				<div class="modal-footer">
+					<button type="submit" formaction="@Url.Action("Index", "MainPage", new { page = 1 })" class="btn btn-primary mb-2">Submit</button>
+					<button type="button" class="btn btn-danger" data-bs-dismiss="modal">Close</button>
+				</div>
+			</form>
+		</div>
+	</div>
+</div>
+
+<!-- Show books -->
+@{
+	const int ITEMS_IN_ROW = 3;
+	}
+<button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#myModal">
+	Filter books
+</button>
+<a class="btn btn-danger" href="@Url.Action("Index", "MainPage", new { page = 1 })">
+	Cancel filter
+</a>
+<hr />
+@if (Model == null || Model.Books.Count() == 0)
+{
+	<div class="justify-content-center align-items-center">
+		<h1 class="display-6">There are no books on this page</h1>
+	</div>
+}
+else
+{
+	<div class="container">
+
+		<div class="row">
+
+			@for (int i = 0; i < Model.Books.Count(); ++i)
+			{
+
+				if (i > 0 && i % ITEMS_IN_ROW == 0)
+				{
+					@:</div><div class="row">
+				}
+
+				<div class="col-lg-4 col-md-6 my-2">
+
+					<div class="card" style="width: 100%;">
+
+						<div class="card-body">
+							<h5 class="card-title">
+								@Model.Books.ElementAt(i).Name
+							</h5>
+
+							<h6 class="card-subtitle mb-2 text-muted">
+								@Model.Books.ElementAt(i).Author
+							</h6>
+								
+							<h6 class="card-subtitle mb-2 text-muted">
+								@Model.Books.ElementAt(i).Genre
+							</h6>
+								
+							<p class="card-text">
+								@Model.Books.ElementAt(i).Description
+							</p>
+							<span class="card-text row m-0 justify-content-between">
+								<span class="col col-sm-5 m-0 text-left" style="font-size: 1.1rem">
+									@(Model.Books.ElementAt(i).Stock)
+								</span>
+								<span class="col col-sm-7 m-0 text-end font-monospace" style="font-size: 1.1rem">
+									@(Math.Round(Model.Books.ElementAt(i).Price, 2))/day
+								</span>
+							</span>
+							<a href="@Url.Action("Index", "BookDetail", new { bookId = Model.Books.ElementAt(i).Id, })" class="stretched-link"></a>
+						</div>
+					</div>	
+				</div>
+			}
+		</div>
+	</div>
+}
+<nav>
+	<ul class="pagination justify-content-center">
+	@if (Model.Page > 1)
+	{
+		// Go to Page - 1
+		<li class="page-item">
+			<a class="page-link" href="@Url.Action("Index", "MainPage", new { page = Model.Page - 1,
+				authorFilter = Model.AuthorFilter,
+				nameFilter = Model.NameFilter,
+				genreFilter = Model.GenreFilter,
+				orderBy = Model.OrderBy,
+				descending = Model.Descending,
+				onStock = Model.OnStock,
+				})">Previous</a>
+		</li>
+	}
+	@for (int i = Math.Max(1, Model.Page - 3); i <= Math.Min(Model.Page + 3, Model.Total); ++i)
+	{
+		if (Model.Page == i)
+		{
+			<li class="page-item active" aria-current="page"><a class="page-link" href="#" disabled>@i</a></li>
+			continue;
+		}
+		<li class="page-item"><a class="page-link" href="@Url.Action("Index", "MainPage", new { page = i,
+				authorFilter = Model.AuthorFilter,
+				nameFilter = Model.NameFilter,
+				genreFilter = Model.GenreFilter,
+				orderBy = Model.OrderBy,
+				descending = Model.Descending,
+				onStock = Model.OnStock,
+				})">@i</a></li>
+	}
+	
+	@if (Model.Page < Model.Total)
+	{
+		// Go to Page + 1
+		<li class="page-item">
+			<a class="page-link" href="@Url.Action("Index", "MainPage", new { page = Model.Page + 1,
+				authorFilter = Model.AuthorFilter,
+				nameFilter = Model.NameFilter,
+				genreFilter = Model.GenreFilter,
+				orderBy = Model.OrderBy,
+				descending = Model.Descending,
+				onStock = Model.OnStock,
+				})">Next</a>
+		</li>
+	}
+	</ul>
+</nav>

@@ -1,0 +1,86 @@
+﻿@model AdminPageBookModel
+
+<div class="row">
+    <div class="col s12">
+        @using (Html.BeginForm())
+        {
+            @Html.ValidationSummary(false, "", new { @class = "text-danger" })
+            <!--                       BOOK DATA                           -->
+            <div class="row valign-wrapper my-4 display-6">
+                <span class="text-xxl-center">New Book Data</span>
+            </div>
+            <hr />
+            
+            <!--NAME-->
+            <div class="row valign-wrapper m-2 text-xxl-center">
+                <div class="col s12 l4">Name:</div>
+                <div class="input-field col s12 l8">
+                    @Html.TextBoxFor(model => model.Name, new { placeholder = "Book name", required = true })
+                </div>
+            </div>
+            <hr />
+
+            <!--DESCRIPTION-->
+            <div class="row valign-wrapper m-2 text-xxl-center">
+                <div class="col s12 l4">Description:</div>
+                <div class="input-field col s12 l8">
+                    @Html.TextBoxFor(model => model.Description, new { placeholder = "Description", required = true })
+                </div>
+            </div>
+            <hr />
+
+            <!--STOCK-->
+            <div class="row valign-wrapper m-2 text-xxl-center">
+                <div class="col s12 l4">Total:</div>
+                <div class="input-field col s12 l8">
+                    @Html.TextBoxFor(model => model.Total, new { placeholder = 0, required = true, type = "number" })
+                </div>
+            </div>
+            <hr />
+
+            <div class="row valign-wrapper m-2 text-xxl-center">
+                <div class="col s12 l4">Price:</div>
+                <div class="input-field col s12 l8">
+                    @Html.TextBoxFor(model => model.Price, new { placeholder = 0, required = true, type = "number" })
+                </div>
+            </div>
+            <hr />
+
+            <!--                         GENRE                             -->
+
+            <!--Dropdown for existing genre, textbox if user wants to create a new one-->
+            <div class="row valign-wrapper m-2 text-xxl-center">
+                <div class="col s12 l4">Select from existing genres:</div>
+                @*<div class="input-field col s12 l8">
+                    @Html.DropDownList(model => model.Genre.Name, ViewBag.genres, "Select Genre")
+                </div>*@
+                <select asp-for="Genre" class="form-control" asp-items="@ViewBag.genres"></select>
+            </div>
+            <hr />
+
+            <div class="row valign-wrapper m-2 text-xxl-center">
+                <div class="col s12 l4">New Genre:</div>
+                <div class="input-field col s12 l8">
+                    @Html.TextBoxFor(model => model.NewGenreName, new { placeholder = "New Genre Name" })
+                </div>
+            </div>
+            <hr />
+
+            <!--                         AUTHOR                             -->
+            <div class="row valign-wrapper m-2 text-xxl-center">
+                <div class="col s12 l4">Author:</div>
+                <div class="input-field col s12 l8">
+                    @Html.TextBoxFor(model => model.Author, new { required = true, placeholder = "Author Name" })
+                </div>
+            </div>
+            <hr />
+
+            <div class="row justify-content-around">
+                <a class="btn col col-md-3 text-decoration-none m-2 bg-danger" href="/AdminPage/">
+                    Cancel change
+                </a>
+                <input type="submit" value="Confirm change" class="btn col col-md-3 m-2 bg-success" />
+            </div>
+        }
+    </div>
+</div>

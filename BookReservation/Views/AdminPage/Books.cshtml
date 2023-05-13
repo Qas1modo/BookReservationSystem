@@ -1,0 +1,34 @@
+﻿@model AdminPageBooksModel
+
+<h1>Books</h1>
+<hr />
+@{
+	if (Model.Books == null || Model.Books.Count() == 0)
+	{
+		<h4>No Books</h4>
+	}
+	else
+	{
+		foreach (var book in Model.Books)
+		{
+			<div class="row m-2">
+				<a class="col col-sm-8 text-decoration-none" 
+				href="@Url.Action("ChangeBookInfo", "AdminPage", new { id = book.Id })">
+					<span class="row" style="font-size: 1.3rem">@book.Name</span>
+					<span class="row text-muted">@book.Author</span>
+				</a>
+				<span class="col col-sm-2 font-monospace" style="font-size: 1.3rem">@(book.Stock)</span>
+				<div class="col col-sm-2">
+					<a href="@Url.Action("DeleteBook", "AdminPage", new { bookId = book.Id })"
+						class="btn btn-danger">Delete Book</a>
+				</div>
+			</div>
+			<hr/>
+		}
+	}
+}
+
+@await Html.PartialAsync("/Views/PartialViews/_PartialPagination.cshtml",
+new PaginationModel { PageCount = Model.Total,
+    PageNumber = Model.Page,
+    Link = "/adminpage/Books"})

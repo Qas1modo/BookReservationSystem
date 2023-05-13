@@ -1,0 +1,67 @@
+﻿@model AdminPageBookModel
+
+<div class="row">
+    <div class="col s12">
+        @using (Html.BeginForm())
+        {
+            <div class="row valign-wrapper my-4 display-6">
+                <span class="text-xxl-center">Change book data</span>
+            </div>
+            @Html.ValidationSummary(false, "", new { @class = "text-danger" })
+            <hr />
+            <div class="row valign-wrapper m-2 text-xxl-center">
+                <div class="col s12 l4">Name:</div>
+                <div class="input-field col s12 l8">
+                    @Html.TextBoxFor(model => model.Name, new { required = true })
+                </div>
+            </div>
+            <hr />
+            <div class="row valign-wrapper m-2 text-xxl-center">
+                <div class="col s12 l4">Author:</div>
+                <div class="input-field col s12 l8">
+                    @Html.TextBoxFor(model => model.Author, new { required = true })
+                </div>
+            </div>
+            <hr />
+            <div class="row valign-wrapper m-2 text-xxl-center">
+                <div class="col s12 l4">Description:</div>
+                <div class="input-field col s12 l8">
+                    @Html.TextBoxFor(model => model.Description, new { placeholder = "Description"})
+                </div>
+            </div>
+            <hr />
+            <div class="row valign-wrapper m-2 text-xxl-center">
+                <div class="col s12 l4">Total:</div>
+                <div class="input-field col s12 l8">
+                    @Html.TextBoxFor(model => model.Total, new { required = true, type = "number" })
+                </div>
+            </div>
+            <hr />
+            <div class="row valign-wrapper m-2 text-xxl-center">
+                <div class="col s12 l4">Select from existing genres:</div>
+                <select asp-for="Genre" class="form-control" asp-items="@ViewBag.genres"></select>
+            </div>
+            <div class="row valign-wrapper m-2 text-xxl-center">
+                <div class="col s12 l4">New Genre:</div>
+                <div class="input-field col s12 l8">
+                    @Html.TextBoxFor(model => model.NewGenreName, new { placeholder = "New Genre Name" })
+                </div>
+            </div>
+            <hr />
+            <hr />
+            <div class="row valign-wrapper m-2 text-xxl-center">
+                <div class="col s12 l4">Price:</div>
+                <div class="input-field col s12 l8">
+                    @Html.TextBoxFor(model => model.Price, new { required = true, type = "float" })
+                </div>
+            </div>
+            <hr />
+            <div class="row justify-content-around">
+                <a class="btn col col-md-3 text-decoration-none m-2 bg-danger" href="/AdminPage/Books">
+                    Cancel change
+                </a>
+                <input type="submit" value="Confirm change" class="btn col col-md-3 m-2 bg-success" />
+            </div>
+        }
+    </div>
+</div>
