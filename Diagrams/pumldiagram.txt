@@ -1,0 +1,89 @@
+@startuml library
+
+hide circle
+skinparam Linetype ortho
+
+entity User {
+    *id: Int <<Key>>
+    ---
+    *name: String
+    *email: String <<Email>>
+    *phone: String <<PhoneNumber>>
+    *birthDate: Date
+    *password: Bytes
+    *street: String
+    *stNumber: Number
+    *city: String
+    *zipCode: Number
+    *salt: String
+    *group: Enumeration
+}
+
+entity CartItem {
+    *userId Int <<Key>>
+    *bookId: Int <<Foreign key>>
+    *id: Int <<Foreign key>>
+    ---
+    *loanPeriod: Int
+    *totalPrice: Decimal
+}
+
+entity Book {
+    *id: Int <<Key>>
+    *genreId: Int <<Foreign key>>
+    *authorId: Int <<Foreign key>>
+    ---
+    *name: String
+    *stock: Number
+    *total: Number
+    *price: Number
+    photo: String <<URL>>
+    description: String
+}
+
+entity Author {
+    *id: Int <<Key>>
+    ---
+    *name: String
+}
+
+entity Genre {
+    *id: Int <<Key>>
+    ---
+    *name: String
+}
+
+entity Rent {
+    *userId: Int <<Foreign key>>
+    *bookId: Int <<Foreign key>>
+    *id: Int <<Key>>
+    ---
+    *reservedAt: DateTime
+    *loanPeriod: Number
+    *state: Enumertation
+    *price: Float
+    rentedAt: DateTime?
+    returnedAt: DateTime?
+}
+
+entity Review {
+    *bookId: Int <<Foreign key>>
+    *userId: Int <<Foreign key>>
+    *id: Int <<Key>>
+    ---
+    *score: Number
+    description: String
+}
+
+User ||..o{ CartItem
+User ||..o{ Rent
+User ||..o{ Review
+Book ||..o{ Review
+Book ||..o{ Rent
+Book ||..o{ CartItem
+Author ||..o{ Book
+Genre ||..o{ Book
+@enduml
+
+
+
