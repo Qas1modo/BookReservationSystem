@@ -1,0 +1,27 @@
+trigger:
+- master
+
+pool:
+  vmImage: ubuntu-latest
+
+steps:
+
+- task: DownloadPipelineArtifact@2
+  inputs:
+    buildType: 'specific'
+    project: '09d61c19-4278-4a70-9bc6-c7f47a21e8da'
+    definition: '1'
+    specificBuildWithTriggering: true
+    buildVersionToDownload: 'latest'
+    artifactName: 'drop'
+    targetPath: '$(Pipeline.Workspace)'
+
+- task: AzureRmWebAppDeployment@4
+  inputs:
+    ConnectionType: 'AzureRM'
+    azureSubscription: 'Azure for Students(ce9891f6-5219-4464-a401-3f3a5282870e)'
+    appType: 'webApp'
+    WebAppName: 'hw3pa200'
+    packageForLinux: '$(System.DefaultWorkingDirectory)/**/*.zip'
+    enableCustomDeployment: true
+    DeploymentType: 'webDeploy'
