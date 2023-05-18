@@ -4,6 +4,8 @@ resources:
      source: BookReservationSystem-CI
      trigger: true
 
+trigger: none
+
 pool:
   vmImage: windows-latest
 
