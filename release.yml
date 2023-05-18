@@ -1,12 +1,12 @@
 
 resources:
  pipelines:
-   - pipeline: BookReservation-CI
-     source: BookReservation-CI
+   - pipeline: BookReservationSystem-CI
+     source: BookReservationSystem-CI
      trigger: true
 
 pool:
-  vmImage: ubuntu-latest
+  vmImage: windows-latest
 
 steps:
 
