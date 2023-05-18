@@ -1,5 +1,9 @@
-trigger:
-- master
+
+resources:
+ pipelines:
+   - pipeline: BookReservation-CI
+     source: BookReservation-CI
+     trigger: true
 
 pool:
   vmImage: ubuntu-latest
@@ -22,6 +26,6 @@ steps:
     azureSubscription: 'Azure for Students(ce9891f6-5219-4464-a401-3f3a5282870e)'
     appType: 'webApp'
     WebAppName: 'hw3pa200'
-    packageForLinux: '$(System.DefaultWorkingDirectory)/**/*.zip'
+    packageForLinux: '$(Pipeline.Workspace)/**/*.zip'
     enableCustomDeployment: true
     DeploymentType: 'webDeploy'
