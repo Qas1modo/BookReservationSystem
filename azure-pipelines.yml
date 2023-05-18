@@ -26,7 +26,7 @@ steps:
   inputs:
     command: 'publish'
     publishWebProjects: false
-    projects: 'BookReservation\BookReservation.csproj"'
+    projects: 'BookReservation\BookReservation.csproj'
     arguments: '-o $(Build.ArtifactStagingDirectory) -c $(buildConfiguration)'
 
 - task: PublishBuildArtifacts@1
