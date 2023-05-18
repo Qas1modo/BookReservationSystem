@@ -1,4 +1,3 @@
-
 resources:
  pipelines:
    - pipeline: BookReservationSystem-CI
