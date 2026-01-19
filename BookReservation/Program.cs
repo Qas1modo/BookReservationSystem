@@ -13,8 +13,7 @@ builder.Services.AddDbContext<BookReservationDbContext>(options =>
 	}
 	else
 	{
-		options.UseMySql(builder.Configuration.GetConnectionString("Production"),
-		   ServerVersion.AutoDetect(builder.Configuration.GetConnectionString("Production"))).UseLazyLoadingProxies();
+		options.UseNpgsql(builder.Configuration.GetConnectionString("Production")).UseLazyLoadingProxies();
 	}
 });
 
