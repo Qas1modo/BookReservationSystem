@@ -40,8 +40,8 @@ namespace BL.Services.CartItemServ
 
 		public async Task EmptyCart(int userId, bool commit = true)
 		{
-			User user = await uow.UserRepository.GetByID(userId);
-			foreach (var cartItem in user.CartItems)
+			var user = await uow.UserRepository.GetByID(userId);
+			foreach (var cartItem in user?.CartItems ?? [])
 			{
 				uow.CartItemRepository.Delete(cartItem.Id);
 			}

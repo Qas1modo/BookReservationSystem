@@ -9,23 +9,23 @@ namespace BL.DTOs
 		[StringLength(100, MinimumLength = 8, ErrorMessage = "The password must be at least 8 characters long!")]
 		[RegularExpression(@"([a-zA-Z]+[^a-zA-Z]+|[^a-zA-Z]+[a-zA-Z]+).*", ErrorMessage = "The password must not contain only letters!")]
 		[DataType(DataType.Password)]
-		public string OpenPassword { get; set; }
+		public required string OpenPassword { get; set; }
 
 		[Required]
 		[Compare(nameof(OpenPassword), ErrorMessage = "Passwords do not match!")]
-		public string RepeatPassword { get; set; }
+		public required string RepeatPassword { get; set; }
 
 		[Required, StringLength(64, ErrorMessage = "Username name too long!")]
 		[MinLength(3, ErrorMessage = "Username must be at least 3 characters long!")]
-		public string Name { get; set; }
+		public required string Name { get; set; }
 
 		[Required, StringLength(64, ErrorMessage = "City name too long!")]
 		[MinLength(3, ErrorMessage = "City must be at least 3 characters long!")]
-		public string City { get; set; }
+		public required string City { get; set; }
 
 		[Required, StringLength(64, ErrorMessage = "Street name too long!")]
 		[MinLength(3, ErrorMessage = "Street name must be at least 3 characters long!")]
-		public string Street { get; set; }
+		public required string Street { get; set; }
 
 		[Required, Range(1, 99999, ErrorMessage = "Street Number must be within between 1 and 99999!")]
 		public int StNumber { get; set; }
@@ -34,10 +34,10 @@ namespace BL.DTOs
 		public int ZipCode { get; set; }
 
 		[Required, EmailAddress]
-		public string Email { get; set; }
+		public required string Email { get; set; }
 
 		[Required, Phone]
-		public string Phone { get; set; }
+		public required string Phone { get; set; }
 
 		[Required]
 		public DateTime BirthDate { get; set; }

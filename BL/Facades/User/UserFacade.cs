@@ -46,16 +46,16 @@ namespace BL.Facades.UserFac
 		public async Task DeleteUser(int userId)
 		{
 			User user = await uow.UserRepository.GetByID(userId);
-			foreach (var review in user.Reviews)
+			foreach (var review in user.Reviews ?? [])
 			{
 				await reviewService.DeleteReview(review.Id, commit: false);
 			}
 			await cartService.EmptyCart(userId, false);
-			foreach (var rent in user.Rents)
+			foreach (var rent in user.Rents ?? [])
 			{
 				DeleteReservation(rent);
 			}
-			foreach (var wishlistItem in user.Wishlist)
+			foreach (var wishlistItem in user.Wishlist ?? [])
 			{
 				await wishListItemService.DeleteWishlistItem(wishlistItem.Id);
 			}
